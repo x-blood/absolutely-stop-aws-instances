@@ -1,0 +1,7 @@
+myvenv
+venv
+
+node_modules
+.serverless
+
+.idea
