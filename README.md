@@ -6,6 +6,9 @@ AWSのインスタンス絶対に止めるマン
 - RDS
 
 ## 通知のサンプル
+Slackに通知される
+
+![image](https://user-images.githubusercontent.com/8668892/138576878-e619a535-8578-4fc5-a0c4-00455cad8dfc.png)
 
 ## Setup
 セットアップ方法を記す
@@ -34,7 +37,7 @@ $ npm install --save serverless-prune-plugin
 ```
 
 #### 2-4. デプロイの実行
-デプロイしたいAWSアカウントに切り替えてから実行すること
+Dockerが必要。デプロイしたいAWSアカウントに切り替えてから実行すること
 ```bash
 make deploy
 ```
