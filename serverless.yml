@@ -1,0 +1,55 @@
+service: absolutely-stop-aws-instances
+
+plugins:
+  - serverless-python-requirements
+  - serverless-prune-plugin
+
+provider:
+  name: aws
+  memorySize: 128
+  runtime: python3.8
+  stage: ops
+  region: ap-northeast-1
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "ec2:*"
+        - "rds:*"
+        - "logs:*"
+        - "cloudwatch:*"
+      Resource: "*"
+  environment:
+    SLACK_WEB_HOOK_URL: ${ssm:/absolutely-stop-aws-instances/web-hook-url}
+    SLACK_CHANNEL_ID: ${ssm:/absolutely-stop-aws-instances/channel-name}
+    AWS_ACCOUNT_NAME: ${ssm:account-name}
+
+custom:
+  pythonRequirements:
+    dockerizePip: true
+  prune:
+    automatic: true
+    number: 3
+
+package:
+  exclude:
+    - './serverless/**'
+    - './myvenv/**'
+    - './node_modules/**'
+
+functions:
+  ec2:
+    handler: src/handler/ec2.lambda_handler
+    timeout: 900
+    events:
+      - schedule:
+          name: 'absolutely-stop-aws-instances-ec2'
+          rate: cron(0 22 * * ? *)
+          enabled: true
+  rds:
+    handler: src/handler/rds.lambda_handler
+    timeout: 900
+    events:
+      - schedule:
+          name: 'absolutely-stop-aws-instances-rds'
+          rate: cron(0 22 * * ? *)
+          enabled: true
